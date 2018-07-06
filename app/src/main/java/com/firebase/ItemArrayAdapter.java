@@ -55,7 +55,7 @@ public class ItemArrayAdapter extends ArrayAdapter<CuotaDeInspiracion> {
         CuotaDeInspiracion item = getItem(position);
 
         title.setText(item.getFrase());
-        subtitle.setText(item.getAutor());
+        subtitle.setText(item.toString());
 
         //Devolver al ListView la fila creada
         return listItemView;

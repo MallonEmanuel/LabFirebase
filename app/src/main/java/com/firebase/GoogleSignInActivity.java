@@ -30,6 +30,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
+    static final int KEEP_LOGED = 1001;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -83,6 +84,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.e(TAG, "RequestCode:"+ requestCode+ "  resultCode :"+ resultCode);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -96,6 +98,12 @@ public class GoogleSignInActivity extends BaseActivity implements
                 // [START_EXCLUDE]
                 updateUI(null);
                 // [END_EXCLUDE]
+            }
+        }
+        if(requestCode == KEEP_LOGED){
+            if(resultCode == RESULT_CANCELED){
+                signOut();
+                revokeAccess();
             }
         }
     }
@@ -168,6 +176,8 @@ public class GoogleSignInActivity extends BaseActivity implements
                 });
     }
 
+
+
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
@@ -179,7 +189,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
             Intent intent = new Intent(GoogleSignInActivity.this, ListActivity.class);
             intent.putExtra("email", user.getEmail());
-            startActivity(intent);
+            startActivityForResult(intent, KEEP_LOGED);
 
         } else {
             mStatusTextView.setText(R.string.signed_out);
